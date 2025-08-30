@@ -15,7 +15,7 @@ private:
   SDL_GPUDevice *device = nullptr;
   SDL_GPUTexture *texture = nullptr;
 
-#ifdef PRJ_DEBUG
+#ifdef __DEBUG
   std::string name;
 #endif
 

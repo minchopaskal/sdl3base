@@ -11,7 +11,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 if (PROJECT_IS_TOP_LEVEL AND UNIX)
-  # Create symlink to compile_commands.json for IDE to pick it up
+  # Create symlink to compile_commands.json for LSPs
   execute_process(
         COMMAND ${CMAKE_COMMAND} -E create_symlink
             ${CMAKE_BINARY_DIR}/compile_commands.json
@@ -20,7 +20,9 @@ if (PROJECT_IS_TOP_LEVEL AND UNIX)
 endif()
 
 set(PROJECT_NAME prj)
-set(PROJECT_NAME_CAPS PRJ)
+
+# If you want to change that then you have to rename all occurances of __DEBUG
+set(PROJECT_NAME_CAPS _)
 
 add_compile_definitions("$<$<CONFIG:Debug>:${PROJECT_NAME_CAPS}_DEBUG>")
 

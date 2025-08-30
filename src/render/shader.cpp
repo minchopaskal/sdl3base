@@ -148,18 +148,16 @@ bool compileShader(
   };
 
   auto cwd = std::filesystem::current_path();
-  auto cfgParentPath = getConfig().dir.parent_path();
+  auto cfgParentPath = std::filesystem::weakly_canonical(getConfig().dir);
   auto relResPath = std::filesystem::relative(cfgParentPath, cwd);
 
   SDL_ShaderCross_HLSL_Info hlslInfo = {
     .source = source.c_str(),
     .entrypoint = "main",
-    // TODO: this is relative to the CWD of the process.
-    // Should be taken from the cfg_path.parent_dir or smth
     .include_dir = relResPath.c_str(),
     .defines = defines,
     .shader_stage = stage,
-#ifdef PRJ_DEBUG
+#ifdef __DEBUG
     .enable_debug = true,
 #else
     .enable_debug = false,
@@ -200,7 +198,7 @@ bool compileShader(
     .bytecode_size = spirvSize,
     .entrypoint = "main",
     .shader_stage = stage,
-#ifdef PRJ_DEBUG
+#ifdef __DEBUG
     .enable_debug = true,
 #else
     .enable_debug = false,

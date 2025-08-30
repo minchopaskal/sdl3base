@@ -58,7 +58,7 @@ bool GPUTexture::init(
     )
   ));
 
-#ifdef PRJ_DEBUG
+#ifdef __DEBUG
   this->name = name;
 #endif
   return true;

@@ -53,7 +53,7 @@ do { \
 
 #endif // SHOW_MEASURE
 
-#ifdef PRJ_DEBUG
+#ifdef __DEBUG
 
 #define DEBUG_PRINT(format, ...) \
 do { \
@@ -77,4 +77,4 @@ do { \
   return {}; \
 } while (false)
 
-#endif // PRJ_DEBUG
+#endif // __DEBUG

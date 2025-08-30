@@ -62,11 +62,11 @@ ShaderConstData AppState::getShaderConstData() {
     .time = static_cast<float>(elapsedTime),
     .delta = static_cast<float>(dt),
 
-#ifdef PRJ_DEBUG
+#ifdef __DEBUG
     .debug = true,
 #else
     .debug = false,
-#endif // PRJ_DEBUG
+#endif // __DEBUG
   };
 }
 

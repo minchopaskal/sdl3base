@@ -16,7 +16,7 @@ bool GPUContext::init(const Config &cfg) {
 
   SDL_CHECK((device = SDL_CreateGPUDevice(
     shaderFormats,
-#ifdef PRJ_DEBUG
+#ifdef __DEBUG
     true,
 #else
     false,
