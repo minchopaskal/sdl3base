@@ -1,0 +1,9 @@
+**/*build*/
+tags
+compile_commands.json
+idea.md
+**/.DS_Store
+**/*.timestamp
+**/*.msl
+**/*.spirv
+.cache
