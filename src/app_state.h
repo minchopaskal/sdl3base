@@ -1,9 +1,9 @@
 #pragma once
 
 #include "game_state.h"
-#include "gpu.h"
 #include "config/config.h"
 #include "gpu_shared/cpu_gpu_shared.h"
+#include "render/gpu.h"
 #include "render/renderer.h"
 
 #include <SDL3/SDL.h>

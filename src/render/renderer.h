@@ -3,9 +3,12 @@
 #include "gpu.h"
 #include "gpu_shared/cpu_gpu_shared.h"
 
+struct GameState;
+
 struct RenderData {
-  void init() {}
-  void deinit() {}
+  void init(GPUContext &gpuCtx, GameState &state);
+  void update(GameState &state);
+  void deinit();
 };
 
 class Renderer {
@@ -60,6 +63,8 @@ private:
   static constexpr int FRAMES_IN_FLIGHT = 2;
 
   RenderPass renderPass;
+  RenderPass postprocessPass;
+  RenderPass postprocessPass2;
 
   GPUContext *gpu;
 

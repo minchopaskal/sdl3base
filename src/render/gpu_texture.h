@@ -2,6 +2,7 @@
 
 #include <SDL3/SDL_gpu.h>
 #include <string>
+#include <glm/vec2.hpp>
 
 enum class TextureType {
   SAMPLER,
@@ -14,6 +15,7 @@ struct GPUTexture {
 private:
   SDL_GPUDevice *device = nullptr;
   SDL_GPUTexture *texture = nullptr;
+  glm::ivec2 sz = {};
 
 #ifdef __DEBUG
   std::string name;
@@ -31,6 +33,7 @@ public:
   void deinit();
 
   SDL_GPUTexture* get() const { return texture; }
+  glm::ivec2 dim() const { return sz; }
 
   static SDL_GPUTextureFormat getGPUTextureFormat(SDL_PixelFormat format);
 };

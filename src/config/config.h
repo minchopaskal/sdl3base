@@ -4,6 +4,9 @@
 #include <optional>
 #include <string>
 
+#include <glm/vec2.hpp>
+#include <glm/vec3.hpp>
+
 enum class EnumType {
   FST,
   SND,
@@ -15,6 +18,10 @@ struct Config {
   std::string shadersOutputDir;
   uint windowW, windowH;
 
+  glm::ivec2 vec2i;
+  glm::ivec3 vec3i;
+  glm::vec2 vec2f;
+  glm::vec3 vec3f;
   std::string str;
   EnumType e;
 
