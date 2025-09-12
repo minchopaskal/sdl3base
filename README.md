@@ -12,14 +12,14 @@ rm -rf .git
 git init
 ```
 
-Rename `PROJECT_NAME` in `CMakeFiles.txt`, and the `PROJECT_NAME` define in `src/defines.h`.
+Rename `PROJECT_NAME` in `CMakeFiles.txt`, and the `PROJECT_NAME` define in `src/defines.h`. Optionally, rename `PROJECT_NAME_CAPS` in `CMakeFiles.txt`.
 
 ```
-cmake -G Ninja -B build -S . -DCMAKE_BUILD_TYPE=Debug
+cmake -G Ninja -B build -S .
 cmake --build build
 
-cmake -G Ninja -B buildrel -S .
-cmake --build buildrel
+cmake -G Ninja -B build -S . -DCMAKE_BUILD_TYPE=Debug
+cmake --build build
 ```
 
 and finally
@@ -27,4 +27,9 @@ and finally
 ```
 cd ../
 mv sdl3newrepo <actualname>
+```
+## Run
+
+```
+./build/prj res/config.cfg
 ```

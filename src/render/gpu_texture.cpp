@@ -6,7 +6,9 @@ SDL_GPUTextureUsageFlags getTextureUsage(TextureType type) {
   case TextureType::SAMPLER:
     return SDL_GPU_TEXTUREUSAGE_SAMPLER;
   case TextureType::TARGET:
-    return SDL_GPU_TEXTUREUSAGE_COLOR_TARGET;
+    // If we are going to use the texture as target most probably we will sample
+    // it on some later pass.
+    return SDL_GPU_TEXTUREUSAGE_COLOR_TARGET | SDL_GPU_TEXTUREUSAGE_SAMPLER;
   case TextureType::DEPTH:
     return SDL_GPU_TEXTUREUSAGE_DEPTH_STENCIL_TARGET;
   case TextureType::STORAGE:
@@ -57,6 +59,8 @@ bool GPUTexture::init(
       &texInfo
     )
   ));
+
+  sz = {w, h};
 
 #ifdef __DEBUG
   this->name = name;

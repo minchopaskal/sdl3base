@@ -28,13 +28,13 @@ add_compile_definitions("$<$<CONFIG:Debug>:${PROJECT_NAME_CAPS}_DEBUG>")
 
 set(SOURCES
   src/config/config.cpp
+  src/render/gpu.cpp
   src/render/gpu_buffer.cpp
   src/render/gpu_texture.cpp
   src/render/renderer.cpp
   src/render/shader.cpp
   src/app_state.cpp
   src/game_state.cpp
-  src/gpu.cpp
   src/main.cpp
 )
 

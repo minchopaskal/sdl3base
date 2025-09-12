@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cassert>
+#include <concepts>
 #include <cstdio>
 #include <filesystem>
 #include <source_location>
@@ -78,3 +79,10 @@ do { \
 } while (false)
 
 #endif // __DEBUG
+
+// BEGIN Concepts
+
+template <class T, class... Args>
+concept AnyOfConcept = (std::same_as<T, Args> || ...);
+
+// END Concepts

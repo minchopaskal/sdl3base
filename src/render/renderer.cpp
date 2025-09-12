@@ -4,6 +4,18 @@
 
 #include "SDL3/SDL_stdinc.h"
 
+#include "game_state.h"
+
+void RenderData::init(GPUContext &gpuCtx, GameState &state) {
+  update(state);
+}
+
+void RenderData::update(GameState &state) {
+}
+
+void RenderData::deinit() {
+}
+
 bool Renderer::RenderPass::init(
   SDL_GPUDevice *device,
   SDL_Window *window,
@@ -130,14 +142,17 @@ void Renderer::RenderPass::bind(
       .offset = 0
     });
   }
-  SDL_BindGPUVertexBuffers(
-    renderPass,
-    0,
-    vertexBindings.data(),
-    static_cast<Uint32>(vertexBuffers.size())
-  );
+  if (!vertexBuffers.empty()) {
+    SDL_BindGPUVertexBuffers(
+      renderPass,
+      0,
+      vertexBindings.data(),
+      static_cast<Uint32>(vertexBuffers.size())
+    );
+  }
 
   // Bind index buffer
+  assert(indexBuffer != nullptr);
   SDL_GPUBufferBinding idxBufBind = {
     .buffer = indexBuffer,
     .offset = 0
@@ -149,12 +164,14 @@ void Renderer::RenderPass::bind(
   );
 
   // Bind storage buffers
-  SDL_BindGPUFragmentStorageBuffers(
-    renderPass,
-    0,
-    storageBuffers.data(),
-    static_cast<Uint32>(storageBuffers.size())
-  );
+  if (!storageBuffers.empty()) {
+    SDL_BindGPUFragmentStorageBuffers(
+      renderPass,
+      0,
+      storageBuffers.data(),
+      static_cast<Uint32>(storageBuffers.size())
+    );
+  }
 
   // Bind samplers
   std::vector<SDL_GPUTextureSamplerBinding> samplerBindings;
@@ -164,12 +181,14 @@ void Renderer::RenderPass::bind(
       .sampler = sampler
     });
   }
-  SDL_BindGPUFragmentSamplers(
-    renderPass,
-    0,
-    samplerBindings.data(),
-    static_cast<Uint32>(samplerBindings.size())
-  );
+  if (!samplerBindings.empty()) {
+    SDL_BindGPUFragmentSamplers(
+      renderPass,
+      0,
+      samplerBindings.data(),
+      static_cast<Uint32>(samplerBindings.size())
+    );
+  }
 }
 
 void Renderer::RenderPass::exec(uint32_t numIndices, uint32_t numInstances) {
@@ -193,14 +212,46 @@ bool Renderer::init(GPUContext *gpu) {
   if (!renderPass.init(
     gpu->device,
     gpu->window,
-    0,
-    0,
-    SDL_PIXELFORMAT_UNKNOWN,
+    getConfig().windowW,
+    getConfig().windowH,
+    SDL_PIXELFORMAT_RGBA32,
     "screen",
     {},
     0,
     0,
     0,
+    false
+  )) {
+    return false;
+  }
+
+  if (!postprocessPass.init(
+    gpu->device,
+    gpu->window,
+    getConfig().windowW,
+    getConfig().windowH,
+    SDL_PIXELFORMAT_RGBA32,
+    "post",
+    {},
+    0,
+    0,
+    1,
+    false
+  )) {
+    return false;
+  }
+
+  if (!postprocessPass2.init(
+    gpu->device,
+    gpu->window,
+    0,
+    0,
+    SDL_PIXELFORMAT_UNKNOWN,
+    "post2",
+    {},
+    0,
+    0,
+    1,
     true
   )) {
     return false;
@@ -242,6 +293,7 @@ void Renderer::deinit() {
 
   screenTriIndexBuffer.deinit();
   renderPass.deinit();
+  postprocessPass.deinit();
 
   gpu = nullptr;
 }
@@ -300,6 +352,32 @@ SDL_AppResult Renderer::draw(
   );
   renderPass.exec(3, 1);
   renderPass.end();
+
+  postprocessPass.begin(cmdBuf, swapchain);
+  postprocessPass.bind(
+    {renderPass.target.get()},
+    {},
+    {},
+    screenTriIndexBuffer.get(),
+    nullptr,
+    pointSampler
+  );
+  postprocessPass.exec(3, 1);
+  postprocessPass.end();
+
+  postprocessPass2.begin(cmdBuf, swapchain);
+  postprocessPass2.bind(
+    {postprocessPass.target.get()},
+    {},
+    {},
+    screenTriIndexBuffer.get(),
+    nullptr,
+    pointSampler
+  );
+  postprocessPass2.exec(3, 1);
+  postprocessPass2.end();
+
+
 
   SDL_CHECK_APP((
     fences[frameCycle] = SDL_SubmitGPUCommandBufferAndAcquireFence(cmdBuf)
